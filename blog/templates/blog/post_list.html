@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<ul>
+    <li><a href="{% url 'post-add' %}">{% trans "Добавить запись" %}</a></li>
+    <li><a href="{% url 'subscribe-add' %}">{% trans "Подписаться" %}</a></li>
+</ul>
+<h1>{% trans "Моя лента" %}</h1>
+<ul>
+{% for post in object_list %}
+    <li>{{ post.created|date }} - {{ post.author }} - {{ post.title }}</li>
+    <p><form action="{% url 'unsubscribe' author_pk=post.author.pk %}" method="post">{% csrf_token %}
+        <input type="submit" value="{% trans "Отписаться" %}" />
+    </form></p>
+    <p>{{ post.body }}</p>
+    <p><form action="{% url 'mark-post-as-read' pk=post.pk %}" method="post">{% csrf_token %}
+        <input type="submit" value="{% trans "Пометить как прочитанное" %}" />
+    </form></p>
+{% empty %}
+    <li>{% trans "Лента пуста. Подпишитесь на кого-нибудь" %}</li>
+{% endfor %}
+</ul>
+{% endblock %}
